@@ -11,6 +11,8 @@ endif
 
 scriptencoding utf-8
 
+syn include @Diff syntax/diff.vim
+
 syn case match
 syn sync minlines=50
 syn sync linebreaks=1
@@ -28,7 +30,27 @@ syn match   jjdescriptionOverflow	".*" contained contains=@Spell
 syn match   jjdescriptionBlank	"^.\+" contained contains=@Spell
 syn match   jjdescriptionFirstLine	"\%^.*" nextgroup=jjdescriptionBlank,jjdescriptionComment skipnl
 
+" The diff syntax is used when configuring JJ to output |diff.git()|
+" in a description template, as suggested by the documentation:[1]
+"
+"   [templates]
+"   draft_commit_description = '''
+"   concat(
+"     coalesce(description, default_commit_description, "\n"),
+"     surround(
+"       "\nJJ: This commit contains the following changes:\n", "",
+"       indent("JJ:     ", diff.stat(72)),
+"     ),
+"     "\nJJ: ignore-rest\n",
+"     diff.git(),
+"   )
+"   '''
+"
+" [1]: https://github.com/jj-vcs/jj/blob/v0.29.0/docs/config.md#default-description
+syn region jjdescriptionDiff start=/\%(^diff --\%(git\|cc\|combined\) \)\@=/ end=/^\%(diff --\|$\|@@\@!\|[^[:alnum:]\ +-]\S\@!\)\@=/ fold contains=@Diff
+
 syn match   jjdescriptionComment "^JJ:.*"
+syn region  jjdescriptionRest start=/^JJ: ignore-rest$/ end=/\%$/ contains=jjdescriptionComment,jjdescriptionDiff
 
 " Headers are comments which end with a colon, followed by a non-empty line.
 syn match   jjdescriptionHeader	"\%(^JJ:\s*\)\@<=\S.*:\%(\n^$\)\@!$" contained containedin=jjdescriptionComment
