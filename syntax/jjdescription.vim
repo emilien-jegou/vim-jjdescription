@@ -3,7 +3,7 @@
 " Maintainer:	Adrià Vilanova <me@avm99963.com>
 " Filenames:	*.jjdescription
 " Source: Based on syntax/gitcommit.vim
-" Last Change:	2024 Oct 26
+" Last Change:	2025 May 08
 
 if exists("b:current_syntax")
   finish
@@ -30,6 +30,7 @@ syn match   jjdescriptionFirstLine	"\%^.*" nextgroup=jjdescriptionBlank,jjdescri
 
 syn match   jjdescriptionComment "^JJ: .*"
 
+" Headers are comments which end with a colon, followed by a non-empty line.
 syn match   jjdescriptionHeader	"\%(^JJ: \)\@<=\S.*:\%(\n^$\)\@!$" contained containedin=jjdescriptionComment
 
 " Sigils extracted from https://github.com/martinvonz/jj/blob/95283dd04f7047c48356de1addd3d59d35ec5bce/cli/src/diff_util.rs#L1542.
