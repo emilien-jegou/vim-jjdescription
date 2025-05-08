@@ -28,18 +28,18 @@ syn match   jjdescriptionOverflow	".*" contained contains=@Spell
 syn match   jjdescriptionBlank	"^.\+" contained contains=@Spell
 syn match   jjdescriptionFirstLine	"\%^.*" nextgroup=jjdescriptionBlank,jjdescriptionComment skipnl
 
-syn match   jjdescriptionComment "^JJ: .*"
+syn match   jjdescriptionComment "^JJ:.*"
 
 " Headers are comments which end with a colon, followed by a non-empty line.
-syn match   jjdescriptionHeader	"\%(^JJ: \)\@<=\S.*:\%(\n^$\)\@!$" contained containedin=jjdescriptionComment
+syn match   jjdescriptionHeader	"\%(^JJ:\s*\)\@<=\S.*:\%(\n^$\)\@!$" contained containedin=jjdescriptionComment
 
 " Sigils extracted from https://github.com/martinvonz/jj/blob/95283dd04f7047c48356de1addd3d59d35ec5bce/cli/src/diff_util.rs#L1542.
-syn match   jjdescriptionType		"\%(^JJ:\s\+\)\@<=[CRMAD]\ze " contained containedin=jjdescriptionComment nextgroup=jjdescriptionFile skipwhite
+syn match   jjdescriptionType		"\%(^JJ:\s*\)\@<=[CRMAD]\ze " contained containedin=jjdescriptionComment nextgroup=jjdescriptionFile skipwhite
 syn match   jjdescriptionFile		".*" contained
 
-syn region  jjdescriptionSelected	start=/^\z(^JJ: \)This commit contains the following changes:$/ end=/^\z1$\|^\z1\@!/ contains=jjdescriptionHeader,jjdescriptionSelectedType containedin=jjdescriptionComment contained transparent fold
+syn region  jjdescriptionSelected	start=/^\z(^JJ:\s*\)This commit contains the following changes:$/ end=/^\z1$\|^\z1\@!/ contains=jjdescriptionHeader,jjdescriptionSelectedType containedin=jjdescriptionComment contained transparent fold
 
-syn match   jjdescriptionSelectedType		"\%(^JJ:\s\+\)\@<=[CRMAD]\ze " contained nextgroup=jjdescriptionSelectedFile skipwhite
+syn match   jjdescriptionSelectedType		"\%(^JJ:\s*\)\@<=[CRMAD]\ze " contained nextgroup=jjdescriptionSelectedFile skipwhite
 syn match   jjdescriptionSelectedFile	".*" contained
 
 hi def link jjdescriptionSummary		Keyword

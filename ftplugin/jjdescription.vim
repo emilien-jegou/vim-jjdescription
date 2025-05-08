@@ -2,7 +2,7 @@
 " Language:	jjdescription file
 " Maintainer:	Adrià Vilanova <me@avm99963.com>
 " Source: Based on ftplugin/gitcommit.vim
-" Last Change:	2024 Jan 30
+" Last Change:	2025 May 08
 
 " Only do this when not done yet for this buffer
 if (exists("b:did_ftplugin"))
@@ -17,5 +17,5 @@ setlocal formatlistpat=^\\s*\\d\\+[\\]:.)}]\\s\\+\\\|^\\s*[-*+]\\s\\+
 
 let b:undo_ftplugin = 'setl modeline< tabstop< formatoptions< tw< com< cms< formatlistpat<'
 
-let &l:comments = ':JJ: '
-let &l:commentstring = 'JJ: %s'
+let &l:comments = ':JJ:'
+let &l:commentstring = 'JJ:%s'
