@@ -1,10 +1,3 @@
-" jjdescription syntax file
-" Language:	jjdescription file
-" Maintainer:	Adrià Vilanova <me@avm99963.com>
-" Filenames:	*.jjdescription
-" Source: Based on syntax/gitcommit.vim
-" Last Change:	2025 May 08
-
 if exists("b:current_syntax")
   finish
 endif
@@ -28,29 +21,33 @@ elseif get(g:, 'jjdescription_summary_length', 1) > 0
 endif
 syn match   jjdescriptionOverflow	".*" contained contains=@Spell
 syn match   jjdescriptionBlank	"^.\+" contained contains=@Spell
-syn match   jjdescriptionFirstLine	"\%^.*" nextgroup=jjdescriptionBlank,jjdescriptionComment skipnl
+syn match   jjdescriptionFirstLine	"\%^.*" nextgroup=jjdescriptionBlank,jjdescriptionComment,jjdescriptionRest skipnl
 
-" The diff syntax is used when configuring JJ to output |diff.git()|
-" in a description template, as suggested by the documentation:[1]
+" The diff syntax is used when configuring JJ to output diff.stat() and diff.git()
+" in a description template, as in the following example:
 "
 "   [templates]
 "   draft_commit_description = '''
 "   concat(
 "     coalesce(description, default_commit_description, "\n"),
-"     surround(
-"       "\nJJ: This commit contains the following changes:\n", "",
-"       indent("JJ:     ", diff.stat(72)),
-"     ),
 "     "\nJJ: ignore-rest\n",
+"     diff.stat(72),
+"     "\n",
 "     diff.git(),
 "   )
 "   '''
 "
-" [1]: https://github.com/jj-vcs/jj/blob/v0.29.0/docs/config.md#default-description
 syn region jjdescriptionDiff start=/\%(^diff --\%(git\|cc\|combined\) \)\@=/ end=/^\%(diff --\|$\|@@\@!\|[^[:alnum:]\ +-]\S\@!\)\@=/ fold contains=@Diff
 
 syn match   jjdescriptionComment "^JJ:.*"
-syn region  jjdescriptionRest start=/^JJ: ignore-rest$/ end=/\%$/ contains=jjdescriptionComment,jjdescriptionDiff
+
+" Highlight the diff.stat() output
+syn match   jjdescriptionDiffStatAdd   "\v\++" contained
+syn match   jjdescriptionDiffStatDel   "\v-+" contained
+syn region  jjdescriptionDiffStatLine  start=/\v^\s*[^|]+ \|\s+\d+\s+\zs/ end=/$/ transparent contains=jjdescriptionDiffStatAdd,jjdescriptionDiffStatDel
+syn match   jjdescriptionDiffStatSummary "^\s*\d+ files\? changed, .*$"
+
+syn region  jjdescriptionRest start=/^JJ: ignore-rest$\n\zs/ end=/\%$/ contains=jjdescriptionComment,jjdescriptionDiffStatLine,jjdescriptionDiffStatSummary,jjdescriptionDiff
 
 " Headers are comments which end with a colon, followed by a non-empty line.
 syn match   jjdescriptionHeader	"\%(^JJ:\s*\)\@<=\S.*:\%(\n^$\)\@!$" contained containedin=jjdescriptionComment
@@ -59,18 +56,16 @@ syn match   jjdescriptionHeader	"\%(^JJ:\s*\)\@<=\S.*:\%(\n^$\)\@!$" contained c
 syn match   jjdescriptionType		"\%(^JJ:\s*\)\@<=[CRMAD]\ze " contained containedin=jjdescriptionComment nextgroup=jjdescriptionFile skipwhite
 syn match   jjdescriptionFile		".*" contained
 
-syn region  jjdescriptionSelected	start=/^\z(^JJ:\s*\)This commit contains the following changes:$/ end=/^\z1$\|^\z1\@!/ contains=jjdescriptionHeader,jjdescriptionSelectedType containedin=jjdescriptionComment contained transparent fold
-
-syn match   jjdescriptionSelectedType		"\%(^JJ:\s*\)\@<=[CRMAD]\ze " contained nextgroup=jjdescriptionSelectedFile skipwhite
-syn match   jjdescriptionSelectedFile	".*" contained
-
 hi def link jjdescriptionSummary		Keyword
 hi def link jjdescriptionComment		Comment
-hi def link jjdescriptionSelectedType	jjdescriptionType
 hi def link jjdescriptionType		Type
 hi def link jjdescriptionHeader		PreProc
-hi def link jjdescriptionSelectedFile	jjdescriptionFile
 hi def link jjdescriptionFile		Constant
 hi def link jjdescriptionBlank		Error
+
+" New highlighting for diff.stat()
+hi def link jjdescriptionDiffStatAdd      DiffAdd
+hi def link jjdescriptionDiffStatDel      DiffDelete
+hi def link jjdescriptionDiffStatSummary  Comment
 
 let b:current_syntax = "jjdescription"

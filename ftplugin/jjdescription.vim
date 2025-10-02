@@ -1,10 +1,3 @@
-" jjdescription filetype plugin
-" Language:	jjdescription file
-" Maintainer:	Adrià Vilanova <me@avm99963.com>
-" Source: Based on ftplugin/gitcommit.vim
-" Last Change:	2025 May 08
-
-" Only do this when not done yet for this buffer
 if (exists("b:did_ftplugin"))
   finish
 endif
